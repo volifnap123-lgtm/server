@@ -21,11 +21,11 @@ function PacketController() {
       if (packet.type === 'MALWARE') {
         if (packet.progress > 0.4 && packet.progress < 0.45 && sectorStatus[0] === 'GREEN') {
           setSectorStatus(0, 'RED');
-          addLog('THREAT: Malware detected in Sector 1!', 'alert');
+          addLog('УГРОЗА: Обнаружено вредоносное ПО в Секторе 1!', 'alert');
         }
         if (packet.progress > 0.6 && packet.progress < 0.65 && sectorStatus[0] === 'RED') {
           setSectorStatus(0, 'OFFLINE');
-          addLog('SECTOR: Sector 1 ISOLATED due to threat.', 'alert');
+          addLog('СИСТЕМА: Сектор 1 ИЗОЛИРОВАН из-за угрозы.', 'alert');
         }
       }
     });
@@ -73,11 +73,11 @@ function UI() {
 
   const getPowerLabel = () => {
     switch (power) {
-      case 'GRID': return 'GRID (Сеть)';
-      case 'BATTERY': return 'BATTERY (Батарея)';
-      case 'GENERATOR': return 'GENERATOR (Генератор)';
-      case 'CAPACITOR': return 'CAPACITOR (Конденсатор)';
-      case 'OFF': return 'OFF (Выключен)';
+      case 'GRID': return 'СЕТЬ';
+      case 'BATTERY': return 'БАТАРЕЯ';
+      case 'GENERATOR': return 'ГЕНЕРАТОР';
+      case 'CAPACITOR': return 'КОНДЕНСАТОР';
+      case 'OFF': return 'ВЫКЛЮЧЕН';
     }
   };
 
@@ -87,26 +87,26 @@ function UI() {
     <div className="ui">
       <div className="header">
         <h1>BASTION-CHRONOS</h1>
-        <p>INDUSTRIAL SECURITY SERVER DIGITAL TWIN</p>
-        {alarmActive && <div className="alarm-banner">⚠️ ALARM: PHYSICAL BREACH DETECTED</div>}
+        <p>ПРОМЫШЛЕННЫЙ СЕРВЕР БЕЗОПАСНОСТИ</p>
+        {alarmActive && <div className="alarm-banner">⚠️ ТРЕВОГА: ФИЗИЧЕСКОЕ ПРОНИКНОВЕНИЕ</div>}
       </div>
 
       <div className="status-panel">
-        <h2>SYSTEM STATUS</h2>
+        <h2>СОСТОЯНИЕ СИСТЕМЫ</h2>
         
         <div className="status-grid">
           <div className="status-item">
-            <label>Power Source</label>
+            <label>Источник питания</label>
             <span className={`value ${power}`}>{getPowerLabel()}</span>
           </div>
           <div className="status-item">
-            <label>Grid Voltage</label>
+            <label>Напряжение сети</label>
             <span className={`value ${gridActive ? 'green' : 'red'}`}>
-              {gridActive ? `${gridVoltage}V` : 'OFFLINE'}
+              {gridActive ? `${gridVoltage}V` : 'ОТКЛЮЧЕНО'}
             </span>
           </div>
           <div className="status-item">
-            <label>Battery Level</label>
+            <label>Уровень батареи</label>
             <span className="value" style={{color: batteryLevel > 50 ? '#00aaff' : batteryLevel > 20 ? '#ffaa00' : '#ff3333'}}>
               {batteryLevel}%
             </span>
@@ -115,7 +115,7 @@ function UI() {
             </div>
           </div>
           <div className="status-item">
-            <label>PCM Temp</label>
+            <label>Темп. PCM</label>
             <span className={`value ${pcmTemp > 50 ? 'red' : 'green'}`}>{pcmTemp.toFixed(1)}°C</span>
             <div className="value-bar">
               <div className="value-bar-fill" style={{width: `${Math.min(100, pcmTemp)}%`, background: pcmTemp > 50 ? '#ff3333' : '#00ff88'}} />
@@ -123,7 +123,7 @@ function UI() {
           </div>
         </div>
 
-        <h3>POWER GENERATORS</h3>
+        <h3>ВОДОРОДНЫЕ ГЕНЕРАТОРЫ</h3>
         <div className="progress-grid">
           {generatorFuel.map((fuel, i) => (
             <div key={i} className="progress-item">
@@ -133,11 +133,11 @@ function UI() {
           ))}
         </div>
 
-        <h3>SECTOR STATUS</h3>
+        <h3>СОСТОЯНИЕ СЕКТОРОВ</h3>
         <div className="sector-grid">
           {sectorStatus.map((status, i) => (
             <div key={i} className={`sector ${status}`}>
-              S{i+1}
+              С{i+1}
             </div>
           ))}
         </div>
@@ -145,27 +145,28 @@ function UI() {
         {selectedSpec && (
           <div className="module-detail">
             <div className="name">{selectedSpec.name}</div>
-            <div style={{color: '#88aaff', fontSize: '10px'}}>{selectedSpec.nameRu}</div>
             <div className="specs">
               <div className="spec">
-                <span className="spec-label">Status</span>
+                <span className="spec-label">Статус</span>
                 <span className="spec-value" style={{color: selectedSpec.status === 'active' ? '#00ff88' : selectedSpec.status === 'error' ? '#ff3333' : '#aaa'}}>
-                  {selectedSpec.status.toUpperCase()}
+                  {selectedSpec.status === 'active' ? 'АКТИВЕН' : selectedSpec.status === 'error' ? 'ОШИБКА' : 'ПРОСТОЙ'}
                 </span>
               </div>
               <div className="spec">
-                <span className="spec-label">Temp</span>
+                <span className="spec-label">Температура</span>
                 <span className="spec-value" style={{color: selectedSpec.temp > 50 ? '#ff3333' : '#aaa'}}>
                   {selectedSpec.temp}°C
                 </span>
               </div>
               <div className="spec">
-                <span className="spec-label">Voltage</span>
+                <span className="spec-label">Напряжение</span>
                 <span className="spec-value">{selectedSpec.voltage}V</span>
               </div>
               <div className="spec">
-                <span className="spec-label">State</span>
-                <span className="spec-value" style={{color: '#88aaff'}}>{selectedSpec.drawerState}</span>
+                <span className="spec-label">Состояние</span>
+                <span className="spec-value" style={{color: '#88aaff'}}>
+                  {selectedSpec.drawerState === 'OPEN' ? 'ОТКРЫТ' : 'ЗАКРЫТ'}
+                </span>
               </div>
             </div>
           </div>
@@ -173,57 +174,57 @@ function UI() {
       </div>
 
       <div className="control-panel">
-        <h2>CONTROLS</h2>
+        <h2>УПРАВЛЕНИЕ</h2>
         
-        <h3>ATTACK SIMULATIONS</h3>
+        <h3>СИМУЛЯЦИИ АТАК</h3>
         <div className="button-grid">
           <button className="btn danger" onClick={() => triggerAttack('MALWARE')}>
-            💉 Inject Malware
-            <span>Моделировать Атаку</span>
+            💉 Вредоносное ПО
+            <span>Моделировать атаку</span>
           </button>
           <button className="btn warning" onClick={() => {
             setGridActive(false);
           }}>
-            ⚡ Simulate Grid Fail
-            <span>Отключить Сеть</span>
+            ⚡ Отключение сети
+            <span>Симуляция сбоя</span>
           </button>
           <button className="btn warning" onClick={() => {
             triggerAlarm(true);
             setLockdown(true);
           }}>
-            🚨 Trigger Breach
-            <span>Проникновение</span>
+            🚨 Проникновение
+            <span>Тривога</span>
           </button>
         </div>
 
-        <h3>VIEW MODES</h3>
+        <h3>РЕЖИМЫ</h3>
         <div className="btn-group">
           <button className={`btn ${viewMode === 'XRAY' ? 'active' : ''}`} onClick={() => setViewMode(viewMode === 'XRAY' ? 'PHYSICAL' : 'XRAY')}>
-            {viewMode === 'XRAY' ? '✅ X-Ray ON' : '❌ X-Ray OFF'}
+            {viewMode === 'XRAY' ? '✅ Рентген ВКЛ' : '❌ Рентген ВЫКЛ'}
           </button>
           <button className={`btn ${maintenanceMode ? 'active' : ''}`} onClick={() => {
             if (authenticated) {
               logout();
             } else {
               const ok = authenticate('admin123');
-              if (!ok) alert('Password: admin123');
+              if (!ok) alert('Пароль: admin123');
             }
           }}>
-            {maintenanceMode ? '🔧 Maintenance ON' : '🔒 Maintenance OFF'}
+            {maintenanceMode ? '🔧 Обслуживание ВКЛ' : '🔒 Обслуживание ВЫКЛ'}
           </button>
         </div>
 
-        <h3>SYSTEM</h3>
+        <h3>СИСТЕМА</h3>
         <div className="button-grid">
           <button className="btn success" onClick={resetSystem}>
-            🔄 Reset System
-            <span>Перезагрузка</span>
+            🔄 Перезагрузка
+            <span>Сброс системы</span>
           </button>
         </div>
       </div>
 
       <div className="log-panel">
-        <h2>SYSTEM LOGS</h2>
+        <h2>ЖУРНАЛ СОБЫТИЙ</h2>
         <div className="logs">
           {logs.slice(-20).reverse().map((log) => (
             <div key={log.id} className={`log-entry ${log.level}`}>
@@ -233,7 +234,7 @@ function UI() {
           ))}
           {logs.length === 0 && (
             <div className="log-entry info">
-              <span className="msg">System initialized. Ready.</span>
+              <span className="msg">Система инициализирована. Готова.</span>
             </div>
           )}
         </div>
